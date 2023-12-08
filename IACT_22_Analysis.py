@@ -1,3 +1,4 @@
+##### SETUP #####
 import os
 import numpy as np
 import mglearn as mgl
@@ -35,6 +36,8 @@ import matplotlib as mp
 import matplotlib.pyplot as plt
 import ctypes
 import tensorflow as tf
+
+##### DATA #####
 GAMMA = pd.read_csv("https://raw.githubusercontent.com/Disco-Gnome/IACT_Algo_22/main/Corsika_data.data",
                            sep=",")
 GAMMA.columns = ['fLength','fWidth','fSize','fConc','fConc1','fAsym','fM3Long','fM3Trans','fAlpha','fDist','gamma']
@@ -45,6 +48,9 @@ GAMMA['gamma_enc'] = GAMMA['gamma_enc'].astype(int)
 GAMMA = GAMMA.drop('gamma', axis=1)
 GAMMA_X = GAMMA.drop(['gamma_enc'], axis=1)
 GAMMA_y = GAMMA['gamma_enc']
+
+##### BUILD MODEL #####
+
 X_train, X_test, y_train, y_test = train_test_split(GAMMA_X,
                                                     GAMMA_y,
                                                     random_state=1,
@@ -62,7 +68,7 @@ X_train_scatter = sm[0][0].get_figure()
 del (ax, subaxis, sm)
 plt.show()
 
-#kNN
+# kNN
 training_accuracy = []
 testing_accuracy = []
 neighbors_settings = range(1,31)
@@ -105,7 +111,7 @@ plt.title('ROC Curve of kNN')
 #plt.savefig("optimalkNN_ROC.png")
 plt.show()
 
-#RF & GBRT
+# RF & GBRT
 forest = RandomForestClassifier(n_estimators=100, random_state=1)
 forest.fit(X_train, y_train)
 gbrt = GradientBoostingClassifier(n_estimators=100, max_depth=3, random_state=1)
@@ -127,6 +133,8 @@ plot_feature_importances_GAMMA(gbrt)
 plt.title("Feature Importances GBDT")
 #plt.savefig("GBDT_feature_importances.png")
 plt.show()
+
+# Determine accuracies
 
 training_accuracy = []
 testing_accuracy = []
@@ -192,7 +200,8 @@ gridGBRT.fit(X_train, y_train)
 print("The best parameters are %s with a score of %0.2f"
       % (gridGBRT.best_params_, gridGBRT.best_score_))
 
-#Optimal Model
+##### Optimal Model #####
+
 forest_opt = RandomForestClassifier(criterion='entropy',
                                     max_depth=9,
                                     max_features=7,
